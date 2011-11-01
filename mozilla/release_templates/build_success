@@ -1,0 +1,6 @@
+%(releaseName)s: %(platform)s en-US build available
+%(platform)s en-US build available for %(releaseName)s
+
+%(ftpURL)s
+
+-buildbot

@@ -1,0 +1,17 @@
+SlavePasswords = {
+    "linux": "pass",
+    "linux64": "pass",
+    "fedora": "pass",
+    "fedora64": "pass",
+    "tiger": "pass",
+    "leopard": "pass",
+    "leopard-o": "pass",
+    "snowleopard": "pass",
+    "snowleopard-r4": "pass",
+    "xp": "pass",
+    "win7": "pass",
+    "w764": "pass",
+    "vista": "pass",
+    "tegra_android": "pass",
+}
+
