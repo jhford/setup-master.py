@@ -3,7 +3,7 @@
 
 Sets up mozilla buildbot master in master_dir."""
 
-import os, glob, shutil, subprocess, urllib, tempfile
+import os, glob, shutil, subprocess, urllib, tempfile, sys
 try:
     import simplejson as json
 except ImportError:
@@ -29,10 +29,18 @@ class MasterConfig:
                 )
         return retval
 
-    def createMaster(self, master_dir, buildbot):
-        null = open(os.devnull, "w")
-        subprocess.check_call([buildbot, 'create-master', master_dir], stdout=null)
-        null.close()
+    def createMaster(self, master_dir, buildbot, logfile=None):
+        # The following is needed to maintain exisitng behaviour
+        # of printing stderr of buildbot
+        if logfile:
+            s_out = open(logfile, 'w+')
+            s_err = subprocess.STDOUT
+        else:
+            s_out = open(os.devnull, 'w+')
+            s_err = sys.stderr
+        subprocess.check_call([buildbot, 'create-master', master_dir],
+                              stdout=s_out, stderr=s_err)
+        s_out.close()
         if not os.path.exists(master_dir):
             os.makedirs(master_dir)
         for g in self.globs:
@@ -72,16 +80,16 @@ class MasterConfig:
         if not os.path.isdir(test_output_dir):
             os.mkdir(test_output_dir)
         test_dir = tempfile.mkdtemp(prefix='%s-'%self.name, dir=os.path.join(os.getcwd(), test_output_dir))
-        test_log_filename = test_dir+'.log'
+        test_log_filename = test_dir+'-checkconfig.log'
+        create_log_filename = test_dir+'-create-master.log'
         test_log = open(test_log_filename, 'w')
         print "TEST-INFO creating master"
         try:
-            self.createMaster(test_dir, buildbot)
+            self.createMaster(test_dir, buildbot, logfile=create_log_filename)
             print "TEST-INFO created master"
         except (OSError, subprocess.CalledProcessError):
             print "TEST-FAIL %s failed to be created" % self.name
-            return (300, None, None)
-        null = open(os.devnull, "w")
+            return (300, create_log_filename, None)
         rc = subprocess.call([buildbot, 'checkconfig'],
                              cwd=test_dir, stdout=test_log, stderr=subprocess.STDOUT)
         test_log.close()
