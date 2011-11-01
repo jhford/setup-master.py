@@ -746,10 +746,10 @@ if __name__ == "__main__":
         log.debug('using master json file from "%s"' % options.masters_json)
         if options.role:
             log.info('filtering by "%s" roles' % options.role)
-        master_list = load_masters_json(options.masters_json, role=options.role, log=log)
+        master_list = load_masters_json(options.masters_json, role=options.role, log=log, universal=options.universal)
         if options.test:
             log.debug('adding universal builders because we are testing')
-            master_list.extend(load_masters_json(options.masters_json, role=options.role, universal=True,log=log))
+            master_list.extend(load_masters_json(options.masters_json, role=options.role, universal=not options.universal,log=log))
 
     # Make sure we don't have duplicate names
     master_map = dict((m.name, m) for m in master_list)
@@ -776,6 +776,9 @@ if __name__ == "__main__":
         exit(len(failing_masters))
     elif len(args) == 2:
         master_dir, master_name = args[:2]
+
+        if options.universal:
+            master_name = master_name + '-universal'
 
         if master_name not in master_map:
             log.error("Unknown master %s" % master_name)
