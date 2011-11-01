@@ -732,7 +732,7 @@ if __name__ == "__main__":
     log.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
     ch.setLevel(loglvl)
-    cf = logging.Formatter('%(levelname)-6s - %(message)s')
+    cf = logging.Formatter('%(levelname)-5s - %(message)s')
     ch.setFormatter(cf)
     log.addHandler(ch)
 
