@@ -739,9 +739,13 @@ if __name__ == "__main__":
     if options.buildbot08:
         log.debug('using -8')
         master_list = masters_08
+        for m in master_list:
+            m.log = log
     elif options.buildbot07:
         log.debug('using -7')
         master_list = masters_07
+        for m in master_list:
+            m.log = log
     else:
         log.debug('using master json file from "%s"' % options.masters_json)
         if options.role:
